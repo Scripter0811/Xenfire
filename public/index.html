@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f2f5">
+  <title>Xenfire | Chat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="icon" type="image/svg+xml" href="/assets/xenfire-logo.svg">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+  <section id="auth-screen" class="auth-screen">
+    <div class="auth-card">
+      <a class="brand auth-brand" href="/" aria-label="Xenfire home">
+        <img class="brand-logo" src="/assets/xenfire-logo.svg" alt="">
+        <span class="brand-copy"><strong>XenfireAI</strong></span>
+      </a>
+      <div class="auth-heading">
+        <span class="eyebrow">WELCOME BACK</span>
+        <h1>Good ideas<br><span>start somewhere.</span></h1>
+        <p>Sign in to pick up where you left off.</p>
+      </div>
+      <label class="field-label" for="auth-email">Email</label>
+      <input id="auth-email" type="email" placeholder="you@example.com" autocomplete="email">
+      <label class="field-label" for="auth-password">Password</label>
+      <input id="auth-password" type="password" placeholder="Your password" autocomplete="current-password">
+      <div class="auth-error" id="auth-error" role="alert"></div>
+      <button id="btn-signin" class="btn-primary">Sign in <span aria-hidden="true">↗</span></button>
+      <button id="btn-signup" class="btn-secondary">Create account</button>
+    </div>
+  </section>
+
+  <div id="app" class="app hidden">
+    <aside id="sidebar" class="sidebar">
+      <a class="brand sidebar-brand" href="/" aria-label="Xenfire home">
+        <img class="brand-logo" src="/assets/xenfire-logo.svg" alt="">
+        <span class="brand-copy"><strong>XenfireAI</strong></span>
+      </a>
+      <button id="btn-new-chat" class="new-chat-btn">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg>
+        <span>New conversation</span><kbd>⌘ K</kbd>
+      </button>
+      <div class="list-heading"><span>RECENT</span><span class="list-mark" aria-hidden="true">✳</span></div>
+      <div id="conversation-list" class="conversation-list" aria-label="Recent conversations"></div>
+      <div class="sidebar-bottom">
+        <div class="account-row"><span class="account-avatar" aria-hidden="true">X</span><span id="user-email" class="user-email"></span></div>
+        <div class="sidebar-actions">
+          <button class="sidebar-action" data-open-settings title="Settings" aria-label="Settings">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.1 2.8h3.8l.5 2a5.5 5.5 0 0 1 1.3.8l2-.5 1.9 3.3-1.5 1.5v1.6l1.5 1.5-1.9 3.3-2-.5a5.5 5.5 0 0 1-1.3.8l-.5 2H8.1l-.5-2a5.5 5.5 0 0 1-1.3-.8l-2 .5-1.9-3.3L4 11.5V9.9L2.4 8.4l1.9-3.3 2 .5a5.5 5.5 0 0 1 1.3-.8l.5-2Z"/><circle cx="10" cy="10.7" r="2.2"/></svg>
+            <span>Settings</span>
+          </button>
+          <button id="btn-signout" class="sidebar-action signout-btn" title="Sign out" aria-label="Sign out">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8 3H4.5A1.5 1.5 0 0 0 3 4.5v11A1.5 1.5 0 0 0 4.5 17H8M12 6l4 4-4 4M7 10h9"/></svg>
+            <span>Sign out</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+    <button id="sidebar-scrim" class="sidebar-scrim" aria-label="Close navigation"></button>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-leading">
+          <button id="btn-mobile-menu" class="icon-button mobile-menu" aria-label="Open navigation" title="Open navigation">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14"/></svg>
+          </button>
+          <span class="topbar-title">Workspace <span>/</span> Chat</span>
+        </div>
+        <div class="topbar-trailing">
+          <span class="model-pill"><i></i> GROQ API</span>
+          <button class="icon-button mobile-settings" data-open-settings aria-label="Settings" title="Settings">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.1 2.8h3.8l.5 2a5.5 5.5 0 0 1 1.3.8l2-.5 1.9 3.3-1.5 1.5v1.6l1.5 1.5-1.9 3.3-2-.5a5.5 5.5 0 0 1-1.3.8l-.5 2H8.1l-.5-2a5.5 5.5 0 0 1-1.3-.8l-2 .5-1.9-3.3L4 11.5V9.9L2.4 8.4l1.9-3.3 2 .5a5.5 5.5 0 0 1 1.3-.8l.5-2Z"/><circle cx="10" cy="10.7" r="2.2"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <section id="messages" class="messages" aria-live="polite">
+        <div class="empty-state" id="empty-state">
+          <span class="empty-mark" aria-hidden="true">✳</span>
+          <span class="eyebrow">A FRESH PAGE</span>
+          <h1>Where should we<br><em>begin?</em></h1>
+          <div class="suggestions">
+            <button data-prompt="Help me think through an idea I'm working on."><span>↗</span> Untangle an idea</button>
+            <button data-prompt="Explain a difficult topic in a clear, simple way."><span>✳</span> Make something clear</button>
+            <button data-prompt="Help me write a thoughtful email."><span>↗</span> Find the right words</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="composer-wrap">
+        <div class="composer">
+          <textarea id="input" placeholder="Write your first thought…" rows="1" aria-label="Message Xenfire"></textarea>
+          <div class="composer-tools">
+            <button id="btn-search-toggle" class="search-toggle" type="button" aria-pressed="false" title="Search Google for this message">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.8" cy="8.8" r="5.5"/><path d="m13 13 4 4"/></svg>
+              <span>Search</span>
+            </button>
+            <button id="btn-image-toggle" class="search-toggle" type="button" aria-pressed="false" title="Generate an image from this message">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3" width="15" height="14" rx="1.5"/><circle cx="7" cy="7.5" r="1.3"/><path d="m3.5 15 4.1-4.2 2.6 2.4 2.6-3.1 3.7 4.9"/></svg>
+              <span>Image</span>
+            </button>
+            <button id="btn-send" class="send-btn" aria-label="Send message" title="Send message">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 15V4M5 9l5-5 5 5"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
+    <form method="dialog" class="settings-panel">
+      <header class="settings-header">
+        <div><span class="eyebrow">PREFERENCES</span><h2 id="settings-title">Settings</h2></div>
+        <button class="icon-button" value="cancel" aria-label="Close settings" title="Close settings">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg>
+        </button>
+      </header>
+      <div class="setting-row">
+        <label for="setting-theme">Appearance</label>
+        <select id="setting-theme"><option value="light">Soft light</option><option value="violet">Dark graphite</option></select>
+      </div>
+      <div class="setting-row">
+        <label for="setting-response-length">Reply length</label>
+        <select id="setting-response-length"><option value="quick">Quick</option><option value="balanced">Balanced</option><option value="detailed">Detailed</option></select>
+      </div>
+      <label class="setting-toggle" for="setting-enter-to-send"><span>Send on Enter</span><input id="setting-enter-to-send" type="checkbox"><i aria-hidden="true"></i></label>
+      <footer class="settings-footer">
+        <span>Groq · Llama 3.3 <i></i></span>
+        <button id="setting-reset" class="text-button" type="button">Reset settings</button>
+      </footer>
+    </form>
+  </dialog>
+  <script type="module" src="chat.js"></script>
+</body>
+</html>
